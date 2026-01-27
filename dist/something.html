@@ -11,6 +11,7 @@
         font-family: "Courier New", Courier, monospace;
         margin: 0;
         padding: 0;
+        transition: all 0.4s;
     }
     header {
         background: #111;
@@ -128,7 +129,7 @@
     <div class="forum">
 
         <div class="thread">
-            <div class="thread-header">Welcome Back to FORUS</div>
+            <div class="thread-header">Welcome Back to ClassicForum Redux</div>
             <div class="post">
                 <div class="post-user">ADMIN <span class="post-time">2026-01-23 18:02</span></div>
                 <div class="post-content">
@@ -184,9 +185,88 @@
 
 </div>
 
+<!-- THE SECRET CORRUPTION LINK -->
+<p style="text-align:center; margin-top:20px;">
+  <a href="#" id="corruptLink">---------------------------------------------------------------</a>
+</p>
+
 <footer>
     &copy; 23-1/26 - 19-1/38 FORUS
 </footer>
+
+<script>
+// track corruption level
+let level = parseInt(localStorage.getItem("forus_corruption") || "0");
+
+const link = document.getElementById("corruptLink");
+
+link.addEventListener("click", e => {
+    e.preventDefault();
+    level++;
+    localStorage.setItem("forus_corruption", level);
+    document.body.style.opacity = "0";
+    setTimeout(() => location.reload(), 300);
+});
+
+function corrupt() {
+    // LEVEL 1 — subtle thread header
+    if (level >= 1) {
+        const firstThread = document.querySelector(".thread-header");
+        if (firstThread) firstThread.textContent = "Welcome back to ClassicForum Redux";
+    }
+
+    // LEVEL 2 — quote mutation
+    if (level >= 2) {
+        const quote = document.querySelector(".quote");
+        if (quote) quote.textContent = "FORUS never dies; it gets stranger...";
+    }
+
+    // LEVEL 3 — nav corruption
+    if (level >= 3) {
+        const navFirst = document.querySelector("nav a");
+        if (navFirst) navFirst.textContent = "[H0me]";
+    }
+
+    // LEVEL 4 — duplicate user
+    if (level >= 4) {
+        const users = document.querySelectorAll(".post-user");
+        if (users[1]) users[1].innerHTML = "FORUS <span class='post-time'>2026-01-23 18:12</span>";
+    }
+
+    // LEVEL 5 — background color drift
+    if (level >= 5) {
+        document.body.style.background = "#f8f8f8";
+    }
+
+    // LEVEL 6 — letter spacing subtle
+    if (level >= 6) {
+        document.body.style.letterSpacing = "0.3px";
+    }
+
+    // LEVEL 7 — footer corruption
+    if (level >= 7) {
+        const footer = document.querySelector("footer");
+        if (footer) footer.textContent = "&t - %a FORUS";
+    }
+
+    // LEVEL 8 — final thread corruption
+    if (level >= 8) {
+        const lastThread = document.querySelector(".thread-header:last-of-type");
+        if (lastThread) lastThread.textContent = "HELP";
+    }
+
+    // LEVEL 9 — jumpscare
+    if (level >= 9) {
+    // replace the dashed link with a real link to another page
+    const link = document.getElementById("corruptLink");
+    link.removeEventListener("click", null); // remove previous click handler
+    link.href = "help.html"; // put your target URL here
+}
+
+}
+
+corrupt();
+</script>
 
 </body>
 </html>

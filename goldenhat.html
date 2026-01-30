@@ -5,6 +5,15 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>goldenhat</title>
+    <link id="favicon" rel="icon" type="image/png">
+
+   <script>
+     const ytIcon =
+       "https://yt3.ggpht.com/oPkKFgmPfd3S4olf2aktW5K6XCSdOzHt9KomRaUAyQhznQ4SFRUAWMj-OrPglNK_0w3R5gDj=s108-c-k-c0x00ffffff-no-rj";
+
+     const link = document.getElementById("favicon");
+     link.href = ytIcon + "&v=" + Date.now(); // cache buster
+   </script>
     <style>
         body {
             margin: 0;

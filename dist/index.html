@@ -92,14 +92,30 @@
 <header>--- FORUS ---</header>
 
 <nav>
-    <a href="https://www.google.com">[Home]</a>
+    <a id="helloworld" href="#">[Home]</a>
     <a href="#" onclick="history.back(); return false;">[Back]</a>
     <a href="https://www.threads.com">[Threads]</a>
     <a href="https://www.youtube.com">[Members]</a>
     <a href=https://johndoedid.github.io/mailme/index.html>[FORUS' MailMe]</a>
     <a href="http://125.5.87.162/GEN.php">[Pay FORUS subscription bill]</a>
 </nav>
-
+<script>
+    document.getElementById("helloworld").addEventListener("click", function (event) {
+        event.preventDefault(); // stop normal link behavior
+    
+        // Generate a random number between 0 and 1
+        const randomChance = Math.random();
+    
+        // 0.000003% = 0.00000003 as a decimal
+        const exitChance = 0.00000003;
+    
+        if (randomChance < exitChance) {
+            window.location.href = "exit.html";
+        } else {
+            window.location.href = "https://www.google.com";
+        }
+    });
+</script>
 <div class="container">
 
     <div class="sidebar">

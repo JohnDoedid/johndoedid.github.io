@@ -402,8 +402,10 @@
                     window.location.href = "void.html"; // BYE BYE
                 }, 2000);
             });
-
+            const wer = prompt("We only accept messages from ourselves");
+            if (wer === "John and Alice") {
             div.appendChild(finalLink);
+            }
             document.body.appendChild(div);
         }
     }

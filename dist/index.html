@@ -138,8 +138,32 @@
             <li>LateNightPoster</li>
         </ul>
         <h3>Search</h3>
-        <input type="text" placeholder="search threads..." style="width:100%; padding:4px; border:1px solid #ccc;">
-        <a href="#" class="btn">Search</a>
+
+<input id="textbox" type="text"
+       placeholder="search threads..."
+       style="width:100%; padding:4px; border:1px solid #ccc;">
+
+<a href="#" class="btn" id="button" onclick="doSearch()">Search</a>
+<script>
+document.getElementById("button").addEventListener("click", function() {
+    const input = document.getElementById("textbox").value.trim();
+
+    if (input === "") {
+        alert("Enter something to search");
+        return;
+    }
+
+    // Redirect to search.php with whatever string user typed
+    window.location.href = "/search.php?q=" + encodeURIComponent(input);
+});
+
+// Optional: allow pressing Enter in the textbox
+document.getElementById("textbox").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("button").click();
+    }
+});
+</script>
     </div>
 
     <div class="forum">
@@ -204,6 +228,5 @@
 <footer>
     &copy; 23-1/26 - 19-1/38 FORUS
 </footer>
-
 </body>
 </html>

@@ -57,6 +57,47 @@
             color: #ff0000;
             background: #0000ff;
         }
+
+        /* Image alignment with padding and text wrapping */
+        .left-img {
+            float: left;
+            margin: 0 16px 16px 0;
+            /* top/right/bottom/left */
+            max-width: 45%;
+            padding: 8px;
+            /* optional padding inside image box */
+            box-sizing: border-box;
+        }
+
+        .right-img {
+            float: right;
+            margin: 0 0 16px 16px;
+            /* top/right/bottom/left */
+            max-width: 45%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        /* Paragraph alignment with proper wrapping */
+        .left-p {
+            text-align: left;
+            margin: 8px 0;
+            overflow-wrap: break-word;
+            /* ensures long words wrap */
+        }
+
+        .right-p {
+            text-align: right;
+            margin: 8px 0;
+            overflow-wrap: break-word;
+        }
+
+        /* Clear floats after image + paragraph pairs */
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
     </style>
 </head>
 
@@ -69,35 +110,15 @@
         <h2>
             <blue>goldenhat</blue>
         </h2>
-        <br><br>
         <br>
         <p>This website and all of its content (except for third party content) is part of the FORUS company by <blue><b>GOLDENHAT</b></blue> productions</p>
         <br>
-        <h2>Liscenced with CCA-NC-ND4.0</h2>
-        <section style="margin-top: 16px; font-size: 14px;">
-            <h3>CC BY-NC-ND 4.0</h3>
-
-            <p><b>Permissions</b></p>
-            <ul style="list-style: none; padding: 0;">
-                <li>
-                    <blue>Share;</blue> copy and redistribute the material
-                </li>
-                <li>
-                    <blue>Attribution;</blue> credit must be given to the creators/owner
-                </li>
-            </ul>
-
-            <p><b>Limitations</b></p>
-            <ul style="list-style: none; padding: 0;">
-                <li>
-                    <eulb>No commercial use</eulb>
-                </li>
-                <li>
-                    <eulb>No Modifications</eulb>
-                </li>
-            </ul>
-        </section>
+        <h2>All Rights Reserved</h2>
+        <b><p>Permissions: </p></b> Viewing, caching, quoting small portions under fair use, and linking the project or website
+        <b><p>Restrictions: </p></b> Copying or Republishing without permission, <br>Modifying, adapting, or creating derivative works
+        <br>Commercial use
         <br><br><br>
+        
         <a href="" onclick="history.back()">[Back]</a>
     </main>
 </body>

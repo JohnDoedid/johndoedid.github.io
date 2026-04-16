@@ -234,23 +234,27 @@ function playRing() {
         ding(1100, ctx.currentTime + i * 0.18 + 0.09, 0.1);
     }
 }
-function startTimer(seconds, onDone) {
-    let remaining = seconds;
-    title.textContent = remaining;
-
-    const interval = setInterval(() => {
-        remaining--;
+function startTimer(seconds) {
+    return new Promise(resolve => {
+        let remaining = seconds;
         title.textContent = remaining;
 
-        if (remaining <= 0) {
-            clearInterval(interval);
-            title.textContent = 'done.';
-            playRing();
-            if (onDone) onDone();
-        }
-    }, 1000);
+        const interval = setInterval(() => {
+            remaining--;
+            title.textContent = remaining;
+
+            if (remaining <= 0) {
+                clearInterval(interval);
+                title.textContent = 'done.';
+                playRing();
+
+                resolve(); // 👈 this replaces onDone
+            }
+        }, 1000);
+    });
 }
-title.onclick = function() {
+
+title.onclick = async function() {
     title.textContent = 'thanks for clicking me.';
     let prompt3 = prompt('Thank you for clicking me. whats your name?');
     if (prompt3 == "Alice") {
@@ -266,9 +270,8 @@ title.onclick = function() {
     alert(`I need some help making this site epic!`);
     alert(`Let's start!! You can do the css.`);
     toggleon('.cssbox');
-    startTimer(360, () => {
-        toggleoff('.cssbox'); 
-    });
+    await startTimer(360);
+    toggleoff('.cssbox'); 
     alert(`HI, I'M BACK.`);
     sleep(1000);
     alert(`hmm.....`);

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Test sample</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+body {
+    font-family:Verdana;
+    color: #333;
+    padding:100px;
+    background: white;
+    width: 50vw;
+    height: 50vh;
+}
+titlething {
+    position: fixed;
+    left: 50vw;
+    top: 50vh;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.cssbox {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 340px;
+    background: #0d0d14;
+    border: 1px solid #2a2a40;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #c9d1f0;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    z-index: 99999;
+    display: none;
+    pointer-events: none;
+    overflow: hidden;
+}
+.cssbox-tabs { display: flex; border-bottom: 1px solid #2a2a40; }
+.cssbox-tab {
+    flex: 1; padding: 8px 4px; text-align: center;
+    cursor: pointer; font-size: 11px; color: #555577;
+    background: none; border: none; color: #555577; transition: color 0.15s;
+}
+.cssbox-tab:hover { color: #c9d1f0; }
+.cssbox-tab.on { color: #b39dff; border-bottom: 2px solid #b39dff; }
+.cssbox-panels { padding: 12px; }
+.cssbox-panel { display: none; }
+.cssbox-panel.on { display: block; }
+.cb-label { font-size: 10px; color: #555577; margin-bottom: 4px; display: block; }
+.cb-input, .cb-textarea {
+    width: 100%; box-sizing: border-box;
+    background: #07070f; border: 1px solid #2a2a40; border-radius: 6px;
+    color: #c9d1f0; font-family: 'Courier New', monospace;
+    font-size: 12px; padding: 6px 8px; outline: none; resize: vertical;
+}
+.cb-input:focus, .cb-textarea:focus { border-color: #b39dff; }
+.cb-btn {
+    margin-top: 8px; padding: 6px 0;
+    background: #b39dff; border: none; border-radius: 6px;
+    color: #0d0d14; font-family: 'Courier New', monospace;
+    font-size: 12px; font-weight: bold; cursor: pointer; width: 100%;
+}
+.cb-btn:hover { background: #c9b8ff; }
+.cb-chip {
+    display: inline-block; background: #07070f;
+    border: 1px solid #2a2a40; border-radius: 4px;
+    padding: 3px 7px; margin: 2px; font-size: 11px; cursor: pointer;
+}
+.cb-chip:hover { border-color: #b39dff; color: #b39dff; }
+.cb-chips { margin-top: 4px; max-height: 80px; overflow-y: auto; }
+.cb-msg { font-size: 11px; margin-top: 6px; min-height: 14px; }
+.cb-ok { color: #89d8a0; }
+.cb-err { color: #f28b82; }
+.cssbox-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 0 12px;
+}
+.cssbox-title { font-size: 11px; color: #b39dff; font-weight: bold; letter-spacing: 0.5px; }
+.cssbox-close {
+    background: none; border: none; color: #555577;
+    cursor: pointer; font-size: 15px; line-height: 1; padding: 0;
+}
+.cssbox-close:hover { color: #f28b82; }
+</style>
+</head>
+
+
+
+
+
+<!--This is a default HTML sample.-->
+
+
+
+
+
+<body>
+<titlething id='thign'>hi. please click me for something special.</titlething>
+<div class='cssbox'>
+    <div class="cssbox-header">
+        <span class="cssbox-title">✦make ur own css✦</span>
+        <button class="cssbox-close" onclick="toggleoff()">✕</button>
+    </div>
+    <div class="cssbox-tabs">
+        <button class="cssbox-tab on" onclick="cbTab(this,'ids')">IDs</button>
+        <button class="cssbox-tab" onclick="cbTab(this,'css')">CSS</button>
+        <button class="cssbox-tab" onclick="cbTab(this,'fonts')">Fonts</button>
+        <button class="cssbox-tab" onclick="cbTab(this,'svg')">SVG</button>
+    </div>
+    <div class="cssbox-panels">
+
+        <div class="cssbox-panel on" id="cb-ids">
+            <span class="cb-label">elements with IDs, click to highlight</span>
+            <div class="cb-chips" id="cb-id-list"></div>
+        </div>
+
+        <div class="cssbox-panel" id="cb-css">
+            <span class="cb-label">write CSS rules</span>
+            <textarea class="cb-textarea" id="cb-css-input" rows="5" placeholder="body { background: pink; }"></textarea>
+            <button class="cb-btn" onclick="cbApplyCSS()">apply</button>
+            <div class="cb-msg" id="cb-css-msg"></div>
+        </div>
+
+        <div class="cssbox-panel" id="cb-fonts">
+            <span class="cb-label">Google Font name</span>
+            <input class="cb-input" id="cb-font-input" placeholder="e.g. Oswald" />
+            <span class="cb-label" style="margin-top:8px">apply to</span>
+            <input class="cb-input" id="cb-font-target" placeholder="CSS selector, e.g. body" />
+            <button class="cb-btn" onclick="cbApplyFont()">load & apply</button>
+            <div class="cb-msg" id="cb-font-msg"></div>
+        </div>
+
+        <div class="cssbox-panel" id="cb-svg">
+            <span class="cb-label">SVG code to inject</span>
+            <textarea class="cb-textarea" id="cb-svg-input" rows="4" placeholder="<svg>...</svg>"></textarea>
+            <span class="cb-label" style="margin-top:8px">inject into element ID</span>
+            <input class="cb-input" id="cb-svg-target" placeholder="leave blank = append to body" />
+            <button class="cb-btn" onclick="cbInjectSVG()">inject</button>
+            <div class="cb-msg" id="cb-svg-msg"></div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+const title = document.getElementById('thign')
+const box = document.querySelector('.cssbox');
+
+function toggleon(...selectors) {
+    selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            el.style.display = 'block';
+            el.style.pointerEvents = 'all';
+        });
+    });
+}
+
+function toggleoff(...selectors) {
+    selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            el.style.display = 'none';
+            el.style.pointerEvents = 'none';
+        });
+    });
+}
+
+function cbTab(btn, panel) {
+    document.querySelectorAll('.cssbox-tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.cssbox-panel').forEach(p => p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById('cb-' + panel).classList.add('on');
+}
+
+function cbApplyCSS() {
+    const css = document.getElementById('cb-css-input').value.trim();
+    const msg = document.getElementById('cb-css-msg');
+    if (!css) { msg.textContent = 'nothing to apply.'; msg.className = 'cb-msg cb-err'; return; }
+    let tag = document.getElementById('__cb_style__');
+    if (!tag) { tag = document.createElement('style'); tag.id = '__cb_style__'; document.head.appendChild(tag); }
+    tag.textContent = css;
+    msg.textContent = 'applied!'; msg.className = 'cb-msg cb-ok';
+}
+
+function cbApplyFont() {
+    const name  = document.getElementById('cb-font-input').value.trim();
+    const target = document.getElementById('cb-font-target').value.trim() || 'body';
+    const msg   = document.getElementById('cb-font-msg');
+    if (!name) { msg.textContent = 'enter a font name.'; msg.className = 'cb-msg cb-err'; return; }
+    const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(name)}&display=swap`;
+    if (!document.querySelector(`link[href="${url}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet'; link.href = url;
+        document.head.appendChild(link);
+    }
+    document.querySelectorAll(target).forEach(el => el.style.fontFamily = `'${name}', sans-serif`);
+    msg.textContent = `"${name}" loaded on ${target}`; msg.className = 'cb-msg cb-ok';
+}
+
+function cbInjectSVG() {
+    const code   = document.getElementById('cb-svg-input').value.trim();
+    const target = document.getElementById('cb-svg-target').value.trim();
+    const msg    = document.getElementById('cb-svg-msg');
+    if (!code) { msg.textContent = 'no SVG to inject.'; msg.className = 'cb-msg cb-err'; return; }
+    const parent = target ? document.getElementById(target) : document.body;
+    if (!parent) { msg.textContent = `#${target} not found.`; msg.className = 'cb-msg cb-err'; return; }
+    parent.insertAdjacentHTML('beforeend', code);
+    msg.textContent = 'injected!'; msg.className = 'cb-msg cb-ok';
+}
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+function playRing() {
+    const ctx = new AudioContext();
+
+    function ding(freq, startTime, duration) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(1.2, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+    }
+
+    // rapid ding-ding-ding pattern like an alarm clock
+    for (let i = 0; i < 6; i++) {
+        ding(880, ctx.currentTime + i * 0.18, 0.15);
+        ding(1100, ctx.currentTime + i * 0.18 + 0.09, 0.1);
+    }
+}
+function startTimer(seconds, onDone) {
+    let remaining = seconds;
+    title.textContent = remaining;
+
+    const interval = setInterval(() => {
+        remaining--;
+        title.textContent = remaining;
+
+        if (remaining <= 0) {
+            clearInterval(interval);
+            title.textContent = 'done.';
+            playRing();
+            if (onDone) onDone();
+        }
+    }, 1000);
+}
+title.onclick = function() {
+    title.textContent = 'thanks for clicking me.';
+    let prompt3 = prompt('Thank you for clicking me. whats your name?');
+    if (prompt3 == "Alice") {
+        alert("cool. you have the same name as my partner! she is very nice person.");
+        sleep(1000);
+    } else if (prompt3 == "John") {
+        alert("ooh! you have the same name as me. epic.");
+        sleep(1000);
+    }
+    alert(`you have a cool name, ${prompt3}`);
+    alert(`Anyway, i need some help with something.`);
+    alert(`I need you to do me a favor.`);
+    alert(`I need some help making this site epic!`);
+    alert(`Let's start!! You can do the css.`);
+    toggleon('.cssbox');
+    startTimer(360, () => {
+        toggleoff('.cssbox'); 
+    });
+    alert(`HI, I'M BACK.`);
+    sleep(1000);
+    alert(`hmm.....`);
+    alert(`this site looks very nice!`);
+    alert(`thank u for making the css!!~`);
+    alert(`....`);
+    sleep(2000);
+    alert(`Oh, right!!`);
+    alert(`u want a reward!!`);
+    alert(`hm... ooh! here's something i found:`);
+    alert(`123456789.html.`);
+    alert(`this is all i really have. i will redirect you!`);
+    alert(`bye!!!!!`);
+    startTimer(3);
+    window.location.href = '123456789.html';
+};
+</script>
+</body>
+</html>

@@ -14,6 +14,7 @@
      const link = document.getElementById("favicon");
      link.href = ytIcon + "&v=" + Date.now(); // cache buster
    </script>
+   <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
     <style>
         body {
             margin: 0;
@@ -204,7 +205,34 @@
     transform: translateX(var(--end));
   }
 }
-        
+        midi-player {
+  display: block;
+  width: inherit;
+  margin: 4px;
+  margin-bottom: 0;
+}
+midi-player::part(control-panel) {
+  background: #ff5;
+  border: 2px solid #000;
+  border-radius: 10px 10px 0 0;
+}
+midi-player::part(play-button) {
+  color: #353;
+  border: 2px solid currentColor;
+  background-color: #4d4;
+  border-radius: 20px;
+  transition: all 0.2s;
+  content: 'hello';
+}
+midi-player::part(play-button):hover {
+  color: #0a0;
+  background-color: #5f5;
+  border-radius: 10px;
+}
+midi-player::part(time) {
+  font-family: monospace;
+}
+
     </style>
 </head>
 <body>
@@ -234,6 +262,15 @@
         <iframe width="110" height="200" src="https://www.myinstants.com/instant/icarly-cheers-86037/embed/" frameborder="0" scrolling="no"></iframe>
         <a href="https://youareanidiot.cc/lol.html"><img class=left-inparagraph src="https://cdn.jsdelivr.net/gh/hoto17296/youareanidiot@829795a4d44ba2310437615d7b5ef803be127693/youareanidiot.gif"></a>
         <a href="cats/cat.html"><img class=left-inparagraph src="https://cataas.com/cat"></a>
+        <div style='align-items:center;margin:auto;'><p style='text-align:center;'>random midi player:</p>
+        <midi-player style='justify-content:center;align-items:center;text-align:center;'
+  src="https://magenta.github.io/magenta-js/music/demos/melody.mid"
+  sound-font id='wall'visualizer="#myVisualizer">
+</midi-player>
+<midi-visualizer style='justify-content:center;align-items:center;text-align:center;' type="staff" id="myVisualizer"></midi-visualizer>
+<p style='text-align:center;'>This midi player is bought to you by <b style='color:blue;background-color:grey;'>Cifkao</b>. <br>and you can looks at the midi repository here. <a href="https://github.com/cifkao/html-midi-player/">here</a></p>
+</div> <!-- hi -->
+
     </main>
 
     <footer>

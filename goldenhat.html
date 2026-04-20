@@ -16,6 +16,33 @@
    </script>
    <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
     <style>
+       /* hi */
+darkmode {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border-radius: 5px;
+  border-color:#fff;
+  cursor: pointer;
+  border-width: 4px;
+  border-style: double; /* nice. */
+  user-select: none;
+  transition: 0.3s;
+}
+
+
+body.dark-theme {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: #000
+}
+
+
+body.dark-theme img, 
+body.dark-theme video {
+  filter: invert(1) hue-rotate(180deg);
+}
+
         body {
             margin: 0;
             background: #ffffff;
@@ -39,7 +66,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
+            z-index: 9999
+            ; box-sizing: border-box;
         }
 
         .right {
@@ -101,10 +129,11 @@
             background: #f5f5f5;
             text-align: center;
             position: fixed;
-            bottom: 0;
+            bottom: 0 !important; /* THIA IS IMPORTANTOWRNFJRG */
             left: 0;
             width: 100%;
             z-index: 1000;
+            box-sizing: border-box; /* box = box :) */
         }
         
         .centerparagraph {
@@ -270,7 +299,22 @@ midi-player::part(time) {
 <midi-visualizer style='justify-content:center;align-items:center;text-align:center;' type="staff" id="myVisualizer"></midi-visualizer>
 <p style='text-align:center;'>This midi player is bought to you by <b style='color:blue;background-color:grey;'>Cifkao</b>. <br>and you can looks at the midi repository here. <a href="https://github.com/cifkao/html-midi-player/">here</a></p>
 </div> <!-- hi -->
+<div style='text-align=center'><darkmode style='text-align:center;display: block; margin: 0 auto; width: fit-content;'>Click here to enable dark mdoe!<darkmode></div> <!-- bro -->
+<script>const toggle = document.querySelector('darkmode');
 
+toggle.onclick = function() {
+  // Toggles a 'dark' class on the body to flip the whole site's colors
+  document.body.classList.toggle('dark-theme');
+  
+  // Update the text based on current state
+  if (document.body.classList.contains('dark-theme')) {
+    this.textContent = 'click here to enable dakr mode!!';
+  } else {
+    this.textContent = 'click here to diasble dark mode!';
+  }
+};
+</script>
+<p style='color:#11111101;'>yo don't foreget to add the footer here. - xxsdwo239xx</p>
     </main>
 
     <footer>

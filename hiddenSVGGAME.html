@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVG Drift Field</title>
+
+<!-- Typography (distinct, non-generic) -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0c0c0c;
+  --fg: #f5f5f5;
+  --accent: #ff4d00;
+  --muted: #777;
+}
+
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+}
+
+/* Grain texture overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  mix-blend-mode: difference;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+.counter {
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* Canvas area */
+.canvas {
+  position: relative;
+  width: 100%;
+  height: 400vh; /* long scroll */
+}
+
+/* SVG blocks */
+.svg-item {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  opacity: 0;
+  transform: scale(0.8) rotate(-5deg);
+  transition: all 0.8s cubic-bezier(.2,.7,.2,1);
+}
+
+.svg-item.visible {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* Random hover motion */
+.svg-item:hover {
+  transform: scale(1.15) rotate(4deg);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>SVG Drift</h1>
+  <div class="counter">Seen: <span id="count">0</span></div>
+</header>
+
+<div class="canvas" id="canvas"></div>
+
+<script>
+// ===== CONFIG =====
+const canvas = document.getElementById("canvas");
+const countEl = document.getElementById("count");
+
+const svgList = [
+  `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#ff4d00"/></svg>`,
+  `<svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" fill="#00e0ff"/></svg>`,
+  `<svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="#ffe600"/></svg>`
+];
+
+// ===== STATE =====
+let seen = new Set();
+let currentHeight = 400; // vh
+let loading = false;
+let totalGenerated = 0;
+const MAX_ELEMENTS = Infinity; // safety cap
+
+// ===== INTERSECTION OBSERVER =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("visible");
+
+      if (!seen.has(entry.target)) {
+        seen.add(entry.target);
+        countEl.textContent = seen.size;
+      }
+    }
+  });
+}, { threshold: 0.35 });
+
+// ===== GENERATE SVGs =====
+function generateBatch(amount = 40, startVH = 0, rangeVH = currentHeight) {
+  for (let i = 0; i < amount; i++) {
+    if (totalGenerated > MAX_ELEMENTS) return;
+
+    const div = document.createElement("div");
+    div.className = "svg-item";
+
+    // pick random SVG
+    const svg = svgList[Math.floor(Math.random() * svgList.length)];
+    div.innerHTML = svg;
+
+    // horizontal spread
+    div.style.left = Math.random() * 92 + "%";
+
+    // vertical placement ONLY in new region
+    const topVH = startVH + Math.random() * rangeVH;
+    div.style.top = topVH + "vh";
+
+    // varied scale
+    const scale = 0.5 + Math.random() * 1.3;
+    div.style.transform += ` scale(${scale})`;
+
+    // subtle rotation randomness
+    const rot = (Math.random() - 0.5) * 20;
+    div.style.transform += ` rotate(${rot}deg)`;
+
+    canvas.appendChild(div);
+    observer.observe(div);
+
+    totalGenerated++;
+  }
+}
+
+// ===== EXTEND CANVAS =====
+function extendCanvas() {
+  if (loading) return;
+  loading = true;
+
+  const addedVH = 200;
+  const oldHeight = currentHeight;
+
+  currentHeight += addedVH;
+  canvas.style.height = currentHeight + "vh";
+
+  // generate only in the new vertical slice
+  generateBatch(50, oldHeight, addedVH);
+
+  // small delay lock
+  setTimeout(() => loading = false, 200);
+}
+
+// ===== SCROLL LISTENER =====
+window.addEventListener("scroll", () => {
+  const scrollBottom = window.innerHeight + window.scrollY;
+  const triggerPoint = document.body.offsetHeight - 600;
+
+  if (scrollBottom > triggerPoint) {
+    extendCanvas();
+  }
+});
+
+// ===== CLEANUP (performance) =====
+function cleanupFarElements() {
+  const elements = document.querySelectorAll(".svg-item");
+
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+
+    // remove if VERY far above viewport
+    if (rect.bottom < -800) {
+      observer.unobserve(el);
+      el.remove();
+    }
+  });
+}
+
+// run cleanup occasionally
+setInterval(cleanupFarElements, 3000);
+
+// ===== INIT =====
+canvas.style.height = currentHeight + "vh";
+
+// initial spread
+generateBatch(80, 0, currentHeight);
+
+</script>
+</body>
+</html>

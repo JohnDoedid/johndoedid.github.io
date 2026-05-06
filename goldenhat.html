@@ -43,6 +43,9 @@ body.dark-theme video {
   filter: invert(1) hue-rotate(180deg);
 }
 
+body.dark-theme #card-widget-container img {
+  filter: none !important;
+}
         body {
             margin: 0;
             background: #ffffff;
@@ -261,7 +264,65 @@ midi-player::part(play-button):hover {
 midi-player::part(time) {
   font-family: monospace;
 }
+#card-widget-container {
+        width: 250px;
+        background: #000;
+        border: 2px solid #f0f0f0;
+        padding: 15px;
+        font-family: 'Comic Sans MS', Helvetica, 'Comic Sans MS';
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        color: #00ff00;
+        text-align: center;
+        border-style: dashed;
+    }
 
+    #card-status {
+        font-size: 12px;
+        margin-bottom: 10px;
+        color:#0f0;
+        text-transform: uppercase;
+    }
+
+    #card-render-area {
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #333;
+        margin-bottom: 15px;
+        background: #111;
+    }
+
+    #card-render-area img {
+        max-height: 100%;
+        image-rendering: pixelated;
+    }
+
+    .card-placeholder {
+        font-size: 48px;
+        color: #003300;
+    }
+
+    #draw-button {
+        background: #00ff00;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    #draw-button:disabled {
+        background: #005500;
+        cursor: not-allowed;
+    }
+
+    #draw-button:hover:not(:disabled) {
+        background: #fff;
+    }
     </style>
 </head>
 <body>
@@ -299,20 +360,87 @@ midi-player::part(time) {
 <midi-visualizer style='justify-content:center;align-items:center;text-align:center;' type="staff" id="myVisualizer"></midi-visualizer>
 <p style='text-align:center;'>This midi player is bought to you by <b style='color:blue;background-color:grey;'>Cifkao</b>. <br>and you can looks at the midi repository here. <a href="https://github.com/cifkao/html-midi-player/">here</a></p>
 </div> <!-- hi -->
-<div style='text-align=center'><darkmode style='text-align:center;display: block; margin: 0 auto; width: fit-content;'>Click here to enable dark mdoe!<darkmode></div> <!-- bro -->
+<div id="card-widget-container">
+    <div id="card-status">Making long DECK...</div>
+    <div id="card-render-area">
+        <!-- The card image will appear here -->
+        <div class="card-placeholder">?</div>
+    </div>
+    <button id="draw-button" onclick="drawCard()" disabled>draw a card!</button>
+</div>
+<div style='text-align:center;padding:10px;'><darkmode style='text-align:center;display: block; margin: 0 auto; width: fit-content;'>Click here to enable dark mdoe!<darkmode></div> <!-- bro -->
 <script>const toggle = document.querySelector('darkmode');
 
 toggle.onclick = function() {
-  // Toggles a 'dark' class on the body to flip the whole site's colors
+  const now = Date.now();
+  
+  // init or update a list of timestamps from the last 4 seconds
+  this.clickHistory = (this.clickHistory || []).concat(now).filter(t => now - t < 4000);
+
+  // Check if threshold is met
+  if (this.clickHistory.length >= 5) {
+    this.textContent = 'this may cause you a sezuire. no more';
+    document.body.classList.remove('dark-theme');
+    this.onclick = null; // execute order 55
+    return;
+  }
+
+  // put it here nstead
   document.body.classList.toggle('dark-theme');
   
-  // Update the text based on current state
   if (document.body.classList.contains('dark-theme')) {
-    this.textContent = 'click here to enable dakr mode!!';
+    this.textContent = 'click here to disable dark mode!';
   } else {
-    this.textContent = 'click here to diasble dark mode!';
+    this.textContent = 'click here to enable dakr mode!!';
   }
 };
+</script>
+<script>
+    let currentDeckId = null;
+
+    // The initialization process creates a new shuffled deck on load
+    async function initDeck() {
+        try {
+            const response = await fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1');
+            const data = await response.json();
+            currentDeckId = data.deck_id;
+            
+            document.getElementById('card-status').innerText = "DECK READY: " + currentDeckId;
+            document.getElementById('draw-button').disabled = false;
+        } catch (error) {
+            document.getElementById('card-status').innerText = "CONNECTION ERROR";
+        }
+    }
+
+    // The draw function fetches a single card and updates the DOM
+    async function drawCard() {
+        if (!currentDeckId) return;
+
+        const statusEl = document.getElementById('card-status');
+        statusEl.innerText = "DRAWING...";
+
+        try {
+            const response = await fetch(`https://deckofcardsapi.com/api/deck/${currentDeckId}/draw/?count=1`);
+            const data = await response.json();
+            
+            if (data.remaining === 0) {
+                statusEl.innerText = "DECK EMPTY. RESHUFFLING...";
+                await initDeck();
+                return;
+            }
+
+            const card = data.cards[0];
+            const renderArea = document.getElementById('card-render-area');
+            
+            renderArea.innerHTML = `<img src="${card.image}" alt="${card.value} of ${card.suit}">`;
+            statusEl.innerText = `${card.value} OF ${card.suit} (${data.remaining} LEFT)`;
+        } catch (error) {
+            statusEl.innerText = "DRAW FAILED";
+        }
+    }
+
+    // Execution starts here
+    window.addEventListener('DOMContentLoaded', initDeck);
 </script>
 <p style='color:#11111101;'>yo don't foreget to add the footer here. - xxsdwo239xx</p>
     </main>
